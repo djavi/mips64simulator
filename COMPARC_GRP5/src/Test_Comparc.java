@@ -1,11 +1,21 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package test_comparc;
+
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class instructions {
-    
-    public instructions (){
-    
-       
+/**
+ *
+ * @author Miko Cheng
+ */
+public class Test_Comparc {
+  
+    public static void main(String[] args) {
+        
         String test = "DADDIU R3,R0,#0002";    
         //String test = "LD R1,ALPHA(R0)";
         String upper = null,
@@ -108,8 +118,36 @@ public class instructions {
         }
         
         System.out.println(output);
-        
     }
-    
+//    //0001
+//    public static String toBin(String input){
+//        String x = null, y = null, test = null;
+//        String[] set = input.split("");
+//        for(int ctr = 0; ctr < 4; ctr++){
+//            switch (set[ctr]){
+//                case "0": y = "0000";break;
+//                case "1": y = "0001";break;
+//                case "2": y = "0010";break;
+//                case "3": y = "0011";break;
+//                case "4": y = "0100";break;
+//                case "5": y = "0101";break;
+//                case "6": y = "0110";break;
+//                case "7": y = "0111";break;
+//                case "8": y = "1000";break;
+//                case "9": y = "1001";break;
+//                case "A": y = "1010";break;
+//                case "B": y = "1011";break;
+//                case "C": y = "1100";break;
+//                case "D": y = "1101";break;
+//                case "E": y = "1110";break;
+//                case "F": y = "1111";break;
+//            }
+//            x = x + y;
+//        }
+//           
+//        return x.substring(4);
+//    }
+//            
     
 }
+
