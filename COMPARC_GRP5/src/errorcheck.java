@@ -8,6 +8,7 @@
  *
  * @author EJ Caguiat
  */
+import java.util.regex.*;
 public class errorcheck {
     public static void main(String[] args)
     {
@@ -24,11 +25,13 @@ public class errorcheck {
         
         String ins[] = {"DADDIU","LD", "SD", "DADDU", "SLT", "NOP" , "BC", "BGEC", "DAUI"};
         
-        String inputCode = "DADDIU R1, R2, #0000";
+        String inputCode = "DADDIU R1, R0, #0002";
         
         String[] breakCode = inputCode.split("(, )|( )|(,)"); //seperates the inputCode
+        int branchError = 0;
         int insError = 0; //use it nalang if 1 sha then error if 0 then no
-        int regError = 0; // if register error
+        int firstRegError = 0; // if register error
+        int secRegError = 0;
         int thirdError = 0; // if immError/reg3Error
         
         //to check if instruction is valid
@@ -46,28 +49,29 @@ public class errorcheck {
         if(breakCode[0].equals("DADDIU")||breakCode[0].equals("DADDU")||breakCode[0].equals("SLT")||breakCode[0].equals("DAUI")||breakCode[0].equals("BGEC"))
         {
             //if register 1 is valid
-            for(int i = 0; i < ins.length; i++)
+            for(int i = 0; i < reg.length; i++)
             {
+                System.out.println(breakCode[1] + "         " + reg[i][0]);
                 if(breakCode[1].equals(reg[i][0]))
                 {
-                    regError = 0;
+                    firstRegError = 0;
                     break;
                 }
                 else{
-                    regError = 1;
+                    firstRegError = 1;
                 }
             }
 
             //if register2 is valid
-            for(int i = 0; i < ins.length; i++)
+            for(int i = 0; i < reg.length; i++)
             {
                 if(breakCode[2].equals(reg[i][0]))
                 {
-                    regError = 0;
+                    secRegError = 0;
                     break;
                 }
                 else{
-                    regError = 1;
+                    secRegError = 1;
                 }
             }
             
@@ -83,7 +87,7 @@ public class errorcheck {
             
             else if(breakCode[0].equals("DADDU")||breakCode[0].equals("SLT")) //commands with 3RD REGISTER as their 3rd param
             {
-                for(int i = 0; i < ins.length; i++)
+                for(int i = 0; i < reg.length; i++)
                 {
                     if(breakCode[3].equals(reg[i][0]))
                     {
@@ -109,7 +113,7 @@ public class errorcheck {
                     }
                 }
                 
-                if(!breakCode[3].equals("[^A-Za-z0-9]"))
+                if(!breakCode[3].matches("[A-Za-z0-9]+"))
                 {
                     thirdError = 1;
                 }
@@ -118,39 +122,85 @@ public class errorcheck {
 
         else if(breakCode[0].equals("LD")||breakCode[0].equals("SD")) //2 PARAMETER INSTRUCTIONS
         {
-            //checks first parameter
-            for(int i = 0; i < ins.length; i++)
-            {
-                if(breakCode[1].equals(reg[i][0]))
+            if(breakCode[0].equals("LD"))
+            {    //checks first parameter
+                for(int i = 0; i < reg.length; i++)
                 {
-                    regError = 0;
-                    break;
+                    if(breakCode[1].equals(reg[i][0]))
+                    {
+                        firstRegError = 0;
+                        break;
+                    }
+                    else{
+                        firstRegError = 1;
+                    }
                 }
-                else{
-                    regError = 1;
+
+                if(!breakCode[2].matches("[A-Za-z0-9()]+"))
+                {
+                        thirdError = 1;
                 }
             }
-            
-            if(!breakCode[3].equals("[^A-Za-z0-9]"))
-            {
-                    thirdError = 1;
+            else{
+                for(int i = 0; i < reg.length; i++)
+                {
+                    if(breakCode[2].equals(reg[i][0]))
+                    {
+                        firstRegError = 0;
+                        break;
+                    }
+                    else{
+                        firstRegError = 1;
+                    }
+                }
+
+                if(!breakCode[1].matches("[A-Za-z0-9()]+"))
+                {
+                        thirdError = 1;
+                }
             }
         }
         
         else if(breakCode[0].equals("BC"))
         {
-            if(breakCode[1].equals("[^A-Za-z0-9]"))
+            if(breakCode[1].matches("[A-Za-z0-9]+"))
             {
-                regError = 0;
+                branchError = 0;
             }
             else{
-                regError = 1;
+                branchError = 1;
             }
  
         }
         
         else { //NOP instruction
             //checks 1st parameter
+        }
+        
+        System.out.println(insError);
+        System.out.println(firstRegError);
+        System.out.println(secRegError);
+        System.out.println(thirdError);
+        System.out.println(branchError);
+        if(insError == 1)
+        {
+            System.out.println("instruction Error");
+        }
+        if(firstRegError == 1)
+        {
+            System.out.println("register Error");
+        }
+        if(secRegError == 1)
+        {
+            System.out.println("register Error");
+        }
+        if(thirdError == 1)
+        {
+            System.out.println("Third parameter error");
+        }
+        if(branchError == 1)
+        {
+            System.out.println("Branch error");
         }
     }
 }
