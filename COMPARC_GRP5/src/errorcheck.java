@@ -8,7 +8,7 @@
  *
  * @author EJ Caguiat
  */
-public class Driver {
+public class errorcheck {
     public static void main(String[] args)
     {
         String reg[][] = {
@@ -139,17 +139,14 @@ public class Driver {
         
         else if(breakCode[0].equals("BC"))
         {
-            for(int i = 0; i < ins.length; i++)
+            if(breakCode[1].equals("[^A-Za-z0-9]"))
             {
-                if(breakCode[1].equals(reg[i][0]))
-                {
-                    regError = 0;
-                    break;
-                }
-                else{
-                    regError = 1;
-                }
+                regError = 0;
             }
+            else{
+                regError = 1;
+            }
+ 
         }
         
         else { //NOP instruction
