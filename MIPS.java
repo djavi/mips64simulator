@@ -34,7 +34,6 @@ import java.awt.Color;
 import java.awt.Toolkit;
 import java.lang.String;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 import java.util.regex.*;
 
 public class MIPS {
@@ -226,8 +225,9 @@ public class MIPS {
 						//loop for opcode of each inst and print
 						for(int q = 0; q < xd; q++){
 							henlo = wopCode(temp[q]);
-							textArea_2.setText(temp[q]+ ": " + textArea_2.getText() + henlo);
-						}	
+							textArea_2.setText(temp[q]+ ": " + textArea_2.getText() + henlo + "\n");
+						}
+						textArea_2.setText("Congrats! No errors. Check generated opcode.");
 						break;
 						
 					case 1:
@@ -372,129 +372,140 @@ public class MIPS {
 	        //seperate the instructions because these use a format of ins r1, r2, imm/r3
 	        if(breakCode[0].equals("DADDIU")||breakCode[0].equals("DADDU")||breakCode[0].equals("SLT")||breakCode[0].equals("DAUI")||breakCode[0].equals("BGEC"))
 	        {
-	            //if register 1 is valid
-	            for(int i = 0; i < reg.length; i++)
-	            {
-	                System.out.println(breakCode[1] + "         " + reg[i][0]);
-	                if(breakCode[1].equals(reg[i][0]))
-	                {
-	                    firstRegError = 0;
-	                    break;
-	                }
-	                else{
-	                    firstRegError = 1;
-	                }
-	            }
-
-	            //if register2 is valid
-	            for(int i = 0; i < reg.length; i++)
-	            {
-	                if(breakCode[2].equals(reg[i][0]))
-	                {
-	                    secRegError = 0;
-	                    break;
-	                }
-	                else{
-	                    secRegError = 1;
-	                }
-	            }
-	            
-	            //checks what type of parameter the 3rd one is
-	            if(breakCode[0].equals("DADDIU")||breakCode[0].equals("DAUI")) //commands with IMMEDIATE as their 3rd param
-	            {
-	                if(breakCode[3].charAt(0) == '#' && breakCode[3].length() ==  5) //checks if it starts with a # and is 5 chars long (# + hex)
-	                    thirdError = 0;
-	                else
-	                    thirdError = 1;
-	                   
-	            }
-	            
-	            else if(breakCode[0].equals("DADDU")||breakCode[0].equals("SLT")) //commands with 3RD REGISTER as their 3rd param
-	            {
-	                for(int i = 0; i < reg.length; i++)
-	                {
-	                    if(breakCode[3].equals(reg[i][0]))
-	                    {
-	                        thirdError = 0;
-	                        break;
-	                    }
-	                    else{
-	                        thirdError = 1;
-	                    }
-	                }
-	            }
-	            else { //BGEC
-	                for(int i = 0 ; i < reg.length; i++)
-	                {
-	                    if(breakCode[3].equals(reg[i][0]))
-	                    {
-	                        thirdError = 1;
-	                        break;
-	                    } 
-	                    else
-	                    {
-	                        thirdError = 0;
-	                    }
-	                }
-	                
-	                if(!breakCode[3].matches("[A-Za-z0-9]+"))
-	                {
-	                    thirdError = 1;
-	                }
-	            }
+	        	if(breakCode.length != 4)
+	        		insError = 1;
+	        	else {
+		            //if register 1 is valid
+		            for(int i = 0; i < reg.length; i++)
+		            {
+		                System.out.println(breakCode[1] + "         " + reg[i][0]);
+		                if(breakCode[1].equals(reg[i][0]))
+		                {
+		                    firstRegError = 0;
+		                    break;
+		                }
+		                else{
+		                    firstRegError = 1;
+		                }
+		            }
+	
+		            //if register2 is valid
+		            for(int i = 0; i < reg.length; i++)
+		            {
+		                if(breakCode[2].equals(reg[i][0]))
+		                {
+		                    secRegError = 0;
+		                    break;
+		                }
+		                else{
+		                    secRegError = 1;
+		                }
+		            }
+		            
+		            //checks what type of parameter the 3rd one is
+		            if(breakCode[0].equals("DADDIU")||breakCode[0].equals("DAUI")) //commands with IMMEDIATE as their 3rd param
+		            {
+		                if(breakCode[3].charAt(0) == '#' && breakCode[3].length() ==  5) //checks if it starts with a # and is 5 chars long (# + hex)
+		                    thirdError = 0;
+		                else
+		                    thirdError = 1;
+		                   
+		            }
+		            
+		            else if(breakCode[0].equals("DADDU")||breakCode[0].equals("SLT")) //commands with 3RD REGISTER as their 3rd param
+		            {
+		                for(int i = 0; i < reg.length; i++)
+		                {
+		                    if(breakCode[3].equals(reg[i][0]))
+		                    {
+		                        thirdError = 0;
+		                        break;
+		                    }
+		                    else{
+		                        thirdError = 1;
+		                    }
+		                }
+		            }
+		            else { //BGEC
+		                for(int i = 0 ; i < reg.length; i++)
+		                {
+		                    if(breakCode[3].equals(reg[i][0]))
+		                    {
+		                        thirdError = 1;
+		                        break;
+		                    } 
+		                    else
+		                    {
+		                        thirdError = 0;
+		                    }
+		                }
+		                
+		                if(!breakCode[3].matches("[A-Za-z0-9]+"))
+		                {
+		                    thirdError = 1;
+		                }
+		            }
+	        	}
 	        }
 
 	        else if(breakCode[0].equals("LD")||breakCode[0].equals("SD")) //2 PARAMETER INSTRUCTIONS
 	        {
-	            if(breakCode[0].equals("LD"))
-	            {    //checks first parameter
-	                for(int i = 0; i < reg.length; i++)
-	                {
-	                    if(breakCode[1].equals(reg[i][0]))
-	                    {
-	                        firstRegError = 0;
-	                        break;
-	                    }
-	                    else{
-	                        firstRegError = 1;
-	                    }
-	                }
-
-	                if(!breakCode[2].matches("[A-Za-z0-9()]+"))
-	                {
-	                        thirdError = 1;
-	                }
-	            }
-	            else{
-	                for(int i = 0; i < reg.length; i++)
-	                {
-	                    if(breakCode[2].equals(reg[i][0]))
-	                    {
-	                        firstRegError = 0;
-	                        break;
-	                    }
-	                    else{
-	                        firstRegError = 1;
-	                    }
-	                }
-
-	                if(!breakCode[1].matches("[A-Za-z0-9()]+"))
-	                {
-	                        thirdError = 1;
-	                }
-	            }
+	        	if(breakCode.length != 3)
+	        		insError = 1;
+	        	else {
+		            if(breakCode[0].equals("LD"))
+		            {    //checks first parameter
+		                for(int i = 0; i < reg.length; i++)
+		                {
+		                    if(breakCode[1].equals(reg[i][0]) || breakCode[1].equals(null))
+		                    {
+		                        firstRegError = 0;
+		                        break;
+		                    }
+		                    else{
+		                        firstRegError = 1;
+		                    }
+		                }
+	
+		                if(!breakCode[2].matches("[A-Za-z0-9()]+")|| breakCode[2].equals(null))
+		                {
+		                        thirdError = 1;
+		                }
+		            }
+		            else{
+		                for(int i = 0; i < reg.length; i++)
+		                {
+		                    if(breakCode[2].equals(reg[i][0]))
+		                    {
+		                        firstRegError = 0;
+		                        break;
+		                    }
+		                    else{
+		                        firstRegError = 1;
+		                    }
+		                }
+	
+		                if(!breakCode[1].matches("[A-Za-z0-9()]+"))
+		                {
+		                        thirdError = 1;
+		                }
+		            }
+	        	}
 	        }
 	        
 	        else if(breakCode[0].equals("BC"))
 	        {
-	            if(breakCode[1].matches("[A-Za-z0-9]+"))
-	            {
-	                branchError = 0;
-	            }
-	            else{
-	                branchError = 1;
-	            }
-	 
+	        	if(breakCode.length != 4)
+	        		insError = 1;
+	        	else {
+		            if(breakCode[1].matches("[A-Za-z0-9]+"))
+		            {
+		                branchError = 0;
+		            }
+		            else{
+		                branchError = 1;
+		            }
+	        	}
 	        }
 	        
 	        else { //NOP instruction
@@ -520,7 +531,7 @@ public class MIPS {
 	public String wopCode(String yes){
 		test = yes;
 		split = test.split(" ");
-        split_1 = split[1].split(","); 
+        split_1 = split[1].split("(, )|(,)"); 
         instruction = split[0];   
         x =0;
         op_inst = null;
@@ -575,11 +586,11 @@ public class MIPS {
         output = Integer.toString(dec,16) + lower;
     }
     else if(instruction.equals("DADDIU") || instruction.equals("DAUI")){
-        split_3 = split_1[2].split("#");
+        split_3 = split_1[2].split("(#)|(# )");
         RT = op_register[0];
         RS = op_register[1];
         imm = split_3[1];
-        upper = op_inst + RS + RT;
+        upper = op_inst + RS + RT; 
         lower = imm;
         //System.out.println(op_inst + " " + RS + " " + RT + " " + imm);
         up_int = Integer.parseInt(upper,2);
