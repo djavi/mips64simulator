@@ -35,6 +35,7 @@ import java.awt.Toolkit;
 import java.lang.String;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.util.regex.*;
 
 public class MIPS {
 	
@@ -87,7 +88,9 @@ public class MIPS {
 	        
 	public static String[] breakCode; //seperates the inputCode
 	public static int insError = 0; //use it nalang if 1 sha then error if 0 then no
-	public static int regError = 0; // if register error
+	public static int firstRegError = 0; // if register error
+	public static int secRegError = 0; // if register error
+	public static int branchError = 0; // if register error
 	public static int thirdError = 0; // if immError/reg3Error
 	
 	
@@ -351,10 +354,12 @@ public class MIPS {
 	
 	public int[] errorCheck(String yes){
 		inputCode = yes;
-		breakCode = inputCode.split("(, )|( )|(,)");
-		int[] myArray = new int[4];
+		int[] myArray = new int[6];
 		
-		 for(int i = 0; i < ins.length; i++)
+		String[] breakCode = inputCode.split("(, )|( )|(,)"); //seperates the inputCode
+		
+		 //to check if instruction is valid
+	        for(int i = 0; i < ins.length; i++)
 	        {
 	            if(breakCode[0].equals(ins[i])){
 	                insError = 0;
@@ -368,28 +373,29 @@ public class MIPS {
 	        if(breakCode[0].equals("DADDIU")||breakCode[0].equals("DADDU")||breakCode[0].equals("SLT")||breakCode[0].equals("DAUI")||breakCode[0].equals("BGEC"))
 	        {
 	            //if register 1 is valid
-	            for(int i = 0; i < ins.length; i++)
+	            for(int i = 0; i < reg.length; i++)
 	            {
+	                System.out.println(breakCode[1] + "         " + reg[i][0]);
 	                if(breakCode[1].equals(reg[i][0]))
 	                {
-	                    regError = 0;
+	                    firstRegError = 0;
 	                    break;
 	                }
 	                else{
-	                    regError = 1;
+	                    firstRegError = 1;
 	                }
 	            }
 
 	            //if register2 is valid
-	            for(int i = 0; i < ins.length; i++)
+	            for(int i = 0; i < reg.length; i++)
 	            {
 	                if(breakCode[2].equals(reg[i][0]))
 	                {
-	                    regError = 0;
+	                    secRegError = 0;
 	                    break;
 	                }
 	                else{
-	                    regError = 1;
+	                    secRegError = 1;
 	                }
 	            }
 	            
@@ -405,7 +411,7 @@ public class MIPS {
 	            
 	            else if(breakCode[0].equals("DADDU")||breakCode[0].equals("SLT")) //commands with 3RD REGISTER as their 3rd param
 	            {
-	                for(int i = 0; i < ins.length; i++)
+	                for(int i = 0; i < reg.length; i++)
 	                {
 	                    if(breakCode[3].equals(reg[i][0]))
 	                    {
@@ -431,7 +437,7 @@ public class MIPS {
 	                    }
 	                }
 	                
-	                if(!breakCode[3].equals("[^A-Za-z0-9]"))
+	                if(!breakCode[3].matches("[A-Za-z0-9]+"))
 	                {
 	                    thirdError = 1;
 	                }
@@ -440,33 +446,53 @@ public class MIPS {
 
 	        else if(breakCode[0].equals("LD")||breakCode[0].equals("SD")) //2 PARAMETER INSTRUCTIONS
 	        {
-	            //checks first parameter
-	            for(int i = 0; i < ins.length; i++)
-	            {
-	                if(breakCode[1].equals(reg[i][0]))
+	            if(breakCode[0].equals("LD"))
+	            {    //checks first parameter
+	                for(int i = 0; i < reg.length; i++)
 	                {
-	                    regError = 0;
-	                    break;
+	                    if(breakCode[1].equals(reg[i][0]))
+	                    {
+	                        firstRegError = 0;
+	                        break;
+	                    }
+	                    else{
+	                        firstRegError = 1;
+	                    }
 	                }
-	                else{
-	                    regError = 1;
+
+	                if(!breakCode[2].matches("[A-Za-z0-9()]+"))
+	                {
+	                        thirdError = 1;
 	                }
 	            }
-	            
-	            if(!breakCode[3].equals("[^A-Za-z0-9]"))
-	            {
-	                    thirdError = 1;
+	            else{
+	                for(int i = 0; i < reg.length; i++)
+	                {
+	                    if(breakCode[2].equals(reg[i][0]))
+	                    {
+	                        firstRegError = 0;
+	                        break;
+	                    }
+	                    else{
+	                        firstRegError = 1;
+	                    }
+	                }
+
+	                if(!breakCode[1].matches("[A-Za-z0-9()]+"))
+	                {
+	                        thirdError = 1;
+	                }
 	            }
 	        }
 	        
 	        else if(breakCode[0].equals("BC"))
 	        {
-	            if(breakCode[1].equals("[^A-Za-z0-9]"))
+	            if(breakCode[1].matches("[A-Za-z0-9]+"))
 	            {
-	                regError = 0;
+	                branchError = 0;
 	            }
 	            else{
-	                regError = 1;
+	                branchError = 1;
 	            }
 	 
 	        }
@@ -477,14 +503,16 @@ public class MIPS {
 	        
 	        
 	        //returns if error and error typez
-	        if(insError == 0 && regError == 0 && thirdError == 0)
+	        if(insError == 0 && firstRegError == 0 && thirdError == 0 && secRegError == 0 && branchError == 0)
 	        	myArray[0] = 0;
 	        else
 	        	myArray[0] = 1;
 	        
 	        myArray[1] = insError;
-	        myArray[2] = regError;
+	        myArray[2] = firstRegError;
 	        myArray[3] = thirdError;
+	        myArray[4] = secRegError;
+	        myArray[5] = branchError;
 	        
 	        return myArray;
 	    }
@@ -591,8 +619,10 @@ public class MIPS {
 			inputCode = "";
 			breakCode = null;
 			insError = 0;
-			regError = 0;
+			firstRegError = 0;
 			thirdError = 0;
+			secRegError = 0;
+			branchError = 0;
 
 			test = "";
 			upper = null;
