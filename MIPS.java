@@ -93,34 +93,16 @@ public class MIPS {
 	public static int thirdError = 0; // if immError/reg3Error
 	
 	
-	
 	//Opcode Variables
-	public static String test = "";    
-	public static String upper = null,
-            lower = null,
-            output = null;
-    
-    public static int offset = 0, dec, low_int, up_int; 
-    public static String regop[][] ={
-                        {"R0","00000"},{"R1","00001"},{"R2","00010"},{"R3","00011"},
-                        {"R4","00100"},{"R5","00101"},{"R6","00110"},{"R7","00111"},
-                        {"R8","01000"},{"R9","01001"},{"R10","01010"},{"R11","01011"},
-                        {"R12","01100"},{"R13","01101"},{"R14","01110"},{"R15","01111"},
-                        {"R16","0000000000000000"},{"R17","0000000000000000"},{"R18","0000000000000000"},{"R19","0000000000000000"},
-                        {"R20","0000000000000000"},{"R21","0000000000000000"},{"R22","0000000000000000"},{"R23","0000000000000000"},
-                        {"R24","0000000000000000"},{"R25","0000000000000000"},{"R26","0000000000000000"},{"R27","0000000000000000"},
-                        {"R28","0000000000000000"},{"R29","0000000000000000"},{"R30","0000000000000000"},{"R31","000000000000000X"},
-                    };
-    
-    public static String[] split;
-    public static String[] split_1;
-    public static String instruction;   
-    public static int x =0;
-    public static String op_inst = null,RD = null,RS = null,RT = null, imm = null,base = null, off = "0001000000000000";
-   
-    public static int size;
-    public static String[] op_register;
-    public static String[] split_3 = null;
+	String opcodeBin;
+    int opcodeA;
+    int opcodeB;
+    int opcodeImm;
+    String finalOp;
+    String hexOp = "";
+    String aBin, bBin, immBin;
+    String toConv[];
+    int j = 0;
 
 
 	/**
@@ -224,10 +206,11 @@ public class MIPS {
 						String henlo;
 						//loop for opcode of each inst and print
 						for(int q = 0; q < xd; q++){
+							resetVar();
 							henlo = wopCode(temp[q]);
-							textArea_2.setText(temp[q]+ ": " + textArea_2.getText() + henlo + "\n");
+							textArea_2.setText(textArea_2.getText() + "line # " + q + " - " + temp[q] + ": " + henlo + "\n\n");
 						}
-						textArea_2.setText("Congrats! No errors. Check generated opcode.");
+						textArea_1.setText("Congrats! No errors. Check generated opcode.");
 						break;
 						
 					case 1:
@@ -357,6 +340,11 @@ public class MIPS {
 		int[] myArray = new int[6];
 		
 		String[] breakCode = inputCode.split("(, )|( )|(,)"); //seperates the inputCode
+		
+		for(int i = 0; i < breakCode.length; i++)
+        {
+            breakCode[i] = breakCode[i].toUpperCase();
+        }
 		
 		 //to check if instruction is valid
 	        for(int i = 0; i < ins.length; i++)
@@ -528,105 +516,418 @@ public class MIPS {
 	        return myArray;
 	    }
 	
+	
+	//OPCODEEEEEEEEEE
 	public String wopCode(String yes){
-		test = yes;
-		split = test.split(" ");
-        split_1 = split[1].split("(, )|(,)"); 
-        instruction = split[0];   
-        x =0;
-        op_inst = null;
-        RD = null;
-        RS = null;
-        RT = null;
-        imm = null;
-        base = null;
-        off = "0001000000000000";
-       
-        size = split_1.length; 
-        op_register = new String[size];
+		inputCode = yes;
+		breakCode = inputCode.split("(, )|( )|(,)");
+		toConv = new String[8];
+		
+		for(int i = 0; i < breakCode.length; i++)
+        {
+            breakCode[i] = breakCode[i].toUpperCase();
+        }
         
-        for(int ctr=0; ctr < size; ctr++){
+        if(breakCode[0].equals("DADDIU"))
+        {
+        	j = 0;
+            String tempA = breakCode[1].substring(1);
+            String tempB = breakCode[2].substring(1);
+            String tempC = breakCode[3].substring(1);
+            opcodeBin = "011001";
+            opcodeA = Integer.parseInt(tempB); //rs
+            opcodeB = Integer.parseInt(tempA); //rt
+            opcodeImm = Integer.parseInt(tempC,16); //imm
             
-            for(int ctr_2=0; ctr_2 < 32; ctr_2++){
-           
-                if (split_1[ctr].equals(regop[ctr_2][0])){
-                    op_register[x] = regop[ctr_2][1];
-                    x++;
+            aBin = String.format("%5s", Integer.toBinaryString(opcodeA)).replace(' ', '0');
+            bBin = String.format("%5s", Integer.toBinaryString(opcodeB)).replace(' ', '0');
+            immBin = String.format("%16s", Integer.toBinaryString(opcodeImm)).replace(' ', '0');
+            
+            finalOp = opcodeBin + aBin + bBin + immBin;
+            
+            for(int i = 0; i < 8; i++)
+            {
+                toConv[i] = finalOp.substring(j, j+4);
+                j += 4;
+            }
+            for(int i = 0; i < toConv.length; i++)
+            {
+                switch(toConv[i])
+                {
+                    case "0000" : hexOp += "0";
+                        break;
+                    case "0001" : hexOp += "1";
+                        break;
+                    case "0010" : hexOp += "2";
+                        break;
+                    case "0011" : hexOp += "3";
+                        break;
+                    case "0100" : hexOp += "4";
+                        break;
+                    case "0101" : hexOp += "5";
+                        break;
+                    case "0110" : hexOp += "6";
+                        break;
+                    case "0111" : hexOp += "7";
+                        break;
+                    case "1000" : hexOp += "8";
+                        break;
+                    case "1001" : hexOp += "9";
+                        break;
+                    case "1010" : hexOp += "A";
+                        break;
+                    case "1011" : hexOp += "B";
+                        break;
+                    case "1100" : hexOp += "C";
+                        break;
+                    case "1101" : hexOp += "D";
+                        break;
+                    case "1110" : hexOp += "E";
+                        break;
+                    case "1111" : hexOp += "F";
+                        break;
+                         
+                }
+                
+            }
+            
+            System.out.println(hexOp);
+        }
+        else if(breakCode[0].equals("LD"))
+        {
+        	j = 0;
+            opcodeBin = "110111";
+            String tempA = breakCode[2].substring(6).substring(0,1);
+            String tempB = breakCode[1].substring(1);
+            String tempC = breakCode[2].substring(0,4);
+            
+            opcodeA = Integer.parseInt(tempA); //rs
+            opcodeB = Integer.parseInt(tempB); //rt
+            opcodeImm = Integer.parseInt(tempC , 16); //imm
+            
+            aBin = String.format("%5s", Integer.toBinaryString(opcodeA)).replace(' ', '0');
+            bBin = String.format("%5s", Integer.toBinaryString(opcodeB)).replace(' ', '0');
+            immBin = String.format("%16s", Integer.toBinaryString(opcodeImm)).replace(' ', '0');
+            
+            finalOp = opcodeBin + aBin + bBin + immBin;
+            System.out.println(finalOp);
+            
+            for(int i = 0; i < 8; i++)
+            {
+                toConv[i] = finalOp.substring(j, j+4);
+                j += 4;
+            }
+            for(int i = 0; i < toConv.length; i++)
+            {
+                switch(toConv[i])
+                {
+                    case "0000" : hexOp += "0";
+                        break;
+                    case "0001" : hexOp += "1";
+                        break;
+                    case "0010" : hexOp += "2";
+                        break;
+                    case "0011" : hexOp += "3";
+                        break;
+                    case "0100" : hexOp += "4";
+                        break;
+                    case "0101" : hexOp += "5";
+                        break;
+                    case "0110" : hexOp += "6";
+                        break;
+                    case "0111" : hexOp += "7";
+                        break;
+                    case "1000" : hexOp += "8";
+                        break;
+                    case "1001" : hexOp += "9";
+                        break;
+                    case "1010" : hexOp += "A";
+                        break;
+                    case "1011" : hexOp += "B";
+                        break;
+                    case "1100" : hexOp += "C";
+                        break;
+                    case "1101" : hexOp += "D";
+                        break;
+                    case "1110" : hexOp += "E";
+                        break;
+                    case "1111" : hexOp += "F";
+                        break;
+                         
                 }
             }
-         } 
-        
-        split_3 = null;
-		
-		
-		switch(instruction){         
-        case "LD": op_inst = "110111"; break; //base, rt, offset*
-        case "SD": op_inst = "111111"; break; //base, rt, offset*
-        case "DADDIU": op_inst = "011001"; break;   //rs, rt, immediate*
-        case "SLT": op_inst = "000000"; break;   //rs, rt, ||rd, 00000, 101010*
-        case "BC": op_inst = "110010"; break;   //offset
-        case "BGEC": op_inst = "010110"; 
-                     off = "11110000000000000001"; break; //rs, rt, offset
-        case "DAUI": op_inst = "011101"; break; //rs, rt, immediate*  | rt rs
-    }
-    
-    if(instruction.equals("LD") || instruction.equals("SD")){
-        String[] split_2 = split_1[1].split("[()]");
-        System.out.println(split_2[0]);
-        for(int ctr=0; ctr < 32; ctr++){
-            if(split_2[1].equals(regop[ctr][0])){
-                base = regop[ctr][1];
+        }
+        else if(breakCode[0].equals("SD"))
+        {
+        	j = 0;
+            opcodeBin = "111111";
+            String tempA = breakCode[2].substring(6).substring(0,1);
+            String tempB = breakCode[1].substring(1);
+            String tempC = breakCode[2].substring(0,4);
+            
+            opcodeA = Integer.parseInt(tempA); //rs
+            opcodeB = Integer.parseInt(tempB); //rt
+            opcodeImm = Integer.parseInt(tempC , 16); //imm
+            
+            aBin = String.format("%5s", Integer.toBinaryString(opcodeA)).replace(' ', '0');
+            bBin = String.format("%5s", Integer.toBinaryString(opcodeB)).replace(' ', '0');
+            immBin = String.format("%16s", Integer.toBinaryString(opcodeImm)).replace(' ', '0');
+            
+            finalOp = opcodeBin + aBin + bBin + immBin;
+             for(int i = 0; i < 8; i++)
+            {
+                toConv[i] = finalOp.substring(j, j+4);
+                j += 4;
             }
-        }           
-        RT = op_register[0];
-        upper = op_inst + base + RT;
-        offset = Integer.parseInt(off, 2);
-        lower = Integer.toString(offset,16);   
-        dec = Integer.parseInt(upper,2);
-        output = Integer.toString(dec,16) + lower;
-    }
-    else if(instruction.equals("DADDIU") || instruction.equals("DAUI")){
-        split_3 = split_1[2].split("(#)|(# )");
-        RT = op_register[0];
-        RS = op_register[1];
-        imm = split_3[1];
-        upper = op_inst + RS + RT; 
-        lower = imm;
-        //System.out.println(op_inst + " " + RS + " " + RT + " " + imm);
-        up_int = Integer.parseInt(upper,2);
-        //low_int = Integer.parseInt(lower,2);
+            for(int i = 0; i < toConv.length; i++)
+            {
+                switch(toConv[i])
+                {
+                    case "0000" : hexOp += "0";
+                        break;
+                    case "0001" : hexOp += "1";
+                        break;
+                    case "0010" : hexOp += "2";
+                        break;
+                    case "0011" : hexOp += "3";
+                        break;
+                    case "0100" : hexOp += "4";
+                        break;
+                    case "0101" : hexOp += "5";
+                        break;
+                    case "0110" : hexOp += "6";
+                        break;
+                    case "0111" : hexOp += "7";
+                        break;
+                    case "1000" : hexOp += "8";
+                        break;
+                    case "1001" : hexOp += "9";
+                        break;
+                    case "1010" : hexOp += "A";
+                        break;
+                    case "1011" : hexOp += "B";
+                        break;
+                    case "1100" : hexOp += "C";
+                        break;
+                    case "1101" : hexOp += "D";
+                        break;
+                    case "1110" : hexOp += "E";
+                        break;
+                    case "1111" : hexOp += "F";
+                        break;
+                         
+                }
+                
+            }
+        }
+        else if(breakCode[0].equals("DADDU"))
+        {
+        	j = 0;
+            opcodeBin = "000000";
+            String tempA = breakCode[1].substring(1);
+            String tempB = breakCode[2].substring(1);
+            String tempC = breakCode[3].substring(1);
+            String sa = "00000";
+            String func = "101101";
+            
+            opcodeA = Integer.parseInt(tempA); //rs
+            opcodeB = Integer.parseInt(tempB); //rt
+            opcodeImm = Integer.parseInt(tempC); //imm
+            
+            aBin = String.format("%5s", Integer.toBinaryString(opcodeA)).replace(' ', '0');
+            bBin = String.format("%5s", Integer.toBinaryString(opcodeB)).replace(' ', '0');
+            immBin = String.format("%5s", Integer.toBinaryString(opcodeImm)).replace(' ', '0');
+            
+            finalOp = opcodeBin + bBin + immBin + aBin + sa + func;
+             for(int i = 0; i < 8; i++)
+            {
+                toConv[i] = finalOp.substring(j, j+4);
+                j += 4;
+            }
+            for(int i = 0; i < toConv.length; i++)
+            {
+                switch(toConv[i])
+                {
+                    case "0000" : hexOp += "0";
+                        break;
+                    case "0001" : hexOp += "1";
+                        break;
+                    case "0010" : hexOp += "2";
+                        break;
+                    case "0011" : hexOp += "3";
+                        break;
+                    case "0100" : hexOp += "4";
+                        break;
+                    case "0101" : hexOp += "5";
+                        break;
+                    case "0110" : hexOp += "6";
+                        break;
+                    case "0111" : hexOp += "7";
+                        break;
+                    case "1000" : hexOp += "8";
+                        break;
+                    case "1001" : hexOp += "9";
+                        break;
+                    case "1010" : hexOp += "A";
+                        break;
+                    case "1011" : hexOp += "B";
+                        break;
+                    case "1100" : hexOp += "C";
+                        break;
+                    case "1101" : hexOp += "D";
+                        break;
+                    case "1110" : hexOp += "E";
+                        break;
+                    case "1111" : hexOp += "F";
+                        break;
+                         
+                }
+                
+            }
+            
+        }
+        else if(breakCode[0].equals("SLT"))
+        {
+        	j = 0;
+            opcodeBin = "000000";
+            String tempA = breakCode[1].substring(1);
+            String tempB = breakCode[2].substring(1);
+            String tempC = breakCode[3].substring(1);
+            String sa = "00000";
+            String func = "101010";
+            
+            opcodeA = Integer.parseInt(tempA); //rs
+            opcodeB = Integer.parseInt(tempB); //rt
+            opcodeImm = Integer.parseInt(tempC); //imm
+            
+            aBin = String.format("%5s", Integer.toBinaryString(opcodeA)).replace(' ', '0');
+            bBin = String.format("%5s", Integer.toBinaryString(opcodeB)).replace(' ', '0');
+            immBin = String.format("%5s", Integer.toBinaryString(opcodeImm)).replace(' ', '0');
+            
+            finalOp = opcodeBin + bBin + immBin + aBin + sa + func;
+             for(int i = 0; i < 8; i++)
+            {
+                toConv[i] = finalOp.substring(j, j+4);
+                j += 4;
+            }
+            for(int i = 0; i < toConv.length; i++)
+            {
+                switch(toConv[i])
+                {
+                    case "0000" : hexOp += "0";
+                        break;
+                    case "0001" : hexOp += "1";
+                        break;
+                    case "0010" : hexOp += "2";
+                        break;
+                    case "0011" : hexOp += "3";
+                        break;
+                    case "0100" : hexOp += "4";
+                        break;
+                    case "0101" : hexOp += "5";
+                        break;
+                    case "0110" : hexOp += "6";
+                        break;
+                    case "0111" : hexOp += "7";
+                        break;
+                    case "1000" : hexOp += "8";
+                        break;
+                    case "1001" : hexOp += "9";
+                        break;
+                    case "1010" : hexOp += "A";
+                        break;
+                    case "1011" : hexOp += "B";
+                        break;
+                    case "1100" : hexOp += "C";
+                        break;
+                    case "1101" : hexOp += "D";
+                        break;
+                    case "1110" : hexOp += "E";
+                        break;
+                    case "1111" : hexOp += "F";
+                        break;
+                         
+                }
+                
+            }
+        }
+        else if(breakCode.equals("BC"))
+        {
+            opcodeBin = "110010";
+        }
+        else if(breakCode.equals("BGEC"))
+        {
+            opcodeBin = "010110";
+        }
+        else if(breakCode.equals("DAUI"))
+        {
+        	j = 0;
+            opcodeBin = "011101";
+            String tempA = breakCode[1].substring(1);
+            String tempB = breakCode[2].substring(1);
+            String tempC = breakCode[3].substring(1);
+            
+            opcodeA = Integer.parseInt(tempA); //rs
+            opcodeB = Integer.parseInt(tempB); //rt
+            opcodeImm = Integer.parseInt(tempC); //imm
+            
+            aBin = String.format("%5s", Integer.toBinaryString(opcodeA)).replace(' ', '0');
+            bBin = String.format("%5s", Integer.toBinaryString(opcodeB)).replace(' ', '0');
+            immBin = String.format("%16s", Integer.toBinaryString(opcodeImm)).replace(' ', '0');
+            
+            finalOp = opcodeBin + bBin + aBin + immBin;
+             for(int i = 0; i < 8; i++)
+            {
+                toConv[i] = finalOp.substring(j, j+4);
+                j += 4;
+            }
+            for(int i = 0; i < toConv.length; i++)
+            {
+                switch(toConv[i])
+                {
+                    case "0000" : hexOp += "0";
+                        break;
+                    case "0001" : hexOp += "1";
+                        break;
+                    case "0010" : hexOp += "2";
+                        break;
+                    case "0011" : hexOp += "3";
+                        break;
+                    case "0100" : hexOp += "4";
+                        break;
+                    case "0101" : hexOp += "5";
+                        break;
+                    case "0110" : hexOp += "6";
+                        break;
+                    case "0111" : hexOp += "7";
+                        break;
+                    case "1000" : hexOp += "8";
+                        break;
+                    case "1001" : hexOp += "9";
+                        break;
+                    case "1010" : hexOp += "A";
+                        break;
+                    case "1011" : hexOp += "B";
+                        break;
+                    case "1100" : hexOp += "C";
+                        break;
+                    case "1101" : hexOp += "D";
+                        break;
+                    case "1110" : hexOp += "E";
+                        break;
+                    case "1111" : hexOp += "F";
+                        break;
+                         
+                }
+                
+            }
+            
+        }
         
-        output = Integer.toString(up_int,16) + lower;
+        return hexOp;
     }
-    else if(instruction.equals("SLT")){
-        RD = op_register[0];
-        RS = op_register[1];
-        RT = op_register[2];
-        
-        upper = "1111" + op_inst + RS +  RT;
-        lower = RD + "00000101010";
-        up_int = Integer.parseInt(upper,2);
-        low_int = Integer.parseInt(lower,2);
-        output = Integer.toString(up_int,16).substring(1) + Integer.toString(low_int,16);
-    }
-    else if(instruction.equals("BGEC")){
-        RS = op_register[0];
-        RT = op_register[1];
-        upper = op_inst + RS + RT;
-        offset = Integer.parseInt(off, 2);
-        lower = Integer.toString(offset,16).substring(1); 
-        dec = Integer.parseInt(upper,2);
-        output = Integer.toString(dec,16) + lower;
-        
-    }
-    
-    return output;
-	}
 	
 	public void resetVar(){
-			textArea_1.setText("");
-			textArea_2.setText("");
-
 			inputCode = "";
 			breakCode = null;
 			insError = 0;
@@ -635,32 +936,23 @@ public class MIPS {
 			secRegError = 0;
 			branchError = 0;
 
-			test = "";
-			upper = null;
-			lower = null;
-			output = null;
-			offset = 0;
-			dec = 0;
-			low_int = 0;
-			up_int = 0;
-			split = null;
-			split_1 = null;
-			instruction = null;
-			x=0;
-			op_inst = null;
-			RD = null;
-			RS = null;
-			RT = null;
-			imm = null;
-			base = null;
-			off = "0001000000000000";
-			size = 0;
-			op_register = null;
-			split_3 = null;
+			opcodeBin = null;
+	        opcodeA = 0;
+	        opcodeB = 0;
+	        opcodeImm = 0;
+	        finalOp = null;
+	        hexOp = "";
+	        aBin = null; 
+	        bBin = null;
+	        immBin = null;
+	        int j = 0;
+			
 	}
 	
 	public void reset(){
 		textArea.setText("");
+		textArea_1.setText("");
+		textArea_2.setText("");
 		resetVar();
 	}
 	
