@@ -351,7 +351,7 @@ public class MOD105 {
             breakCode[i] = breakCode[i].toUpperCase();
         }
 		
-		if(yes.matches("[a-zA-Z0-9:]+"))
+		if(yes.matches("[a-zA-Z0-9]+[:]{1}"))
 		{
 			System.out.println("nice");
 			loopCall = true;
@@ -473,7 +473,7 @@ public class MOD105 {
 		            else{
 		                for(int i = 0; i < reg.length; i++)
 		                {
-		                    if(breakCode[2].equals(reg[i][0]))
+		                    if(breakCode[1].equals(reg[i][0]))
 		                    {
 		                        firstRegError = 0;
 		                        break;
@@ -483,7 +483,7 @@ public class MOD105 {
 		                    }
 		                }
 	
-		                if(!breakCode[1].matches("[A-Za-z0-9()]+"))
+		                if(!breakCode[2].matches("[A-Za-z0-9()]+"))
 		                {
 		                        thirdError = 1;
 		                }
@@ -506,7 +506,8 @@ public class MOD105 {
 	        	}
 	        }
 	        
-	        else if (breakCode[0].equals("NOP")) { //NOP instruction
+	        else if (breakCode[0].equals("NOP")) { 
+	        	//NOP instruction
 	            //checks 1st parameter
 	        }
 	        else {
@@ -869,10 +870,10 @@ public class MOD105 {
             opcodeBin = "110010";
             int found = 0;
             int countz = -1; //ito ung layo ng label from branch
-            
             //found label breakCode[1]
+            String temp = breakCode[1] + ":";
             while(found == 0){
-            	if(yeet[offset].equals(breakCode[1])){
+            	if(yeet[offset].equals(temp)){
             		found = 1;
             	}
             	else
@@ -885,6 +886,83 @@ public class MOD105 {
             
             immBin = String.format("%26s", Integer.toBinaryString(countz)).replace(' ', '0');
             finalOp = opcodeBin + immBin;
+            
+            
+            for(int i = 0; i < 8; i++)
+            {
+                toConv[i] = finalOp.substring(j, j+4);
+                System.out.println(toConv[i]);
+                j += 4;
+
+            }
+            for(int i = 0; i < toConv.length; i++)
+            {
+                switch(toConv[i])
+                {
+                    case "0000" : hexOp += "0";
+                        break;
+                    case "0001" : hexOp += "1";
+                        break;
+                    case "0010" : hexOp += "2";
+                        break;
+                    case "0011" : hexOp += "3";
+                        break;
+                    case "0100" : hexOp += "4";
+                        break;
+                    case "0101" : hexOp += "5";
+                        break;
+                    case "0110" : hexOp += "6";
+                        break;
+                    case "0111" : hexOp += "7";
+                        break;
+                    case "1000" : hexOp += "8";
+                        break;
+                    case "1001" : hexOp += "9";
+                        break;
+                    case "1010" : hexOp += "A";
+                        break;
+                    case "1011" : hexOp += "B";
+                        break;
+                    case "1100" : hexOp += "C";
+                        break;
+                    case "1101" : hexOp += "D";
+                        break;
+                    case "1110" : hexOp += "E";
+                        break;
+                    case "1111" : hexOp += "F";
+                        break;
+                         
+                }
+                
+            }
+            
+            
+        }
+        else if(breakCode[0].equals("BGEC"))
+        {
+            opcodeBin = "010110";
+            int found = 0;
+            int countz = -1; //ito ung layo ng label from branch
+            //found label breakCode[1]
+            String tempA = breakCode[1].substring(1);
+            String tempB = breakCode[2].substring(1);
+            String temp = breakCode[3] + ":";
+            while(found == 0){
+            	if(yeet[offset].equals(temp)){
+            		found = 1;
+            	}
+            	else
+            		countz++;
+            	offset++;	
+            }
+            
+            System.out.println(countz);
+            
+            aBin = String.format("%5s", Integer.toBinaryString(opcodeA)).replace(' ', '0');
+            bBin = String.format("%5s", Integer.toBinaryString(opcodeB)).replace(' ', '0');
+            immBin = String.format("%16s", Integer.toBinaryString(countz)).replace(' ', '0');
+            finalOp = opcodeBin + aBin + bBin + immBin;
+            System.out.println(finalOp);
             
             for(int i = 0; i < 8; i++)
             {
@@ -934,11 +1012,7 @@ public class MOD105 {
             
             
         }
-        else if(breakCode.equals("BGEC"))
-        {
-            opcodeBin = "010110";
-        }
-        else if(breakCode.equals("DAUI"))
+        else if(breakCode[0].equals("DAUI"))
         {
         	j = 0;
             opcodeBin = "011101";
@@ -1004,7 +1078,6 @@ public class MOD105 {
         }
         
         
-        
         return hexOp;
     }
 	
@@ -1017,16 +1090,17 @@ public class MOD105 {
 			secRegError = 0;
 			branchError = 0;
 
-			opcodeBin = null;
+			opcodeBin = "";
 	        opcodeA = 0;
 	        opcodeB = 0;
 	        opcodeImm = 0;
-	        finalOp = null;
+	        finalOp = "";
 	        hexOp = "";
-	        aBin = null; 
-	        bBin = null;
-	        immBin = null;
-	        int j = 0;
+	        aBin = ""; 
+	        bBin = "";
+	        immBin = "";
+	        j = 0;
+	        toConv = new String[8];
 			
 	}
 	

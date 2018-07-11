@@ -1,7 +1,7 @@
 
 public class Methods {
 
-	String reg[][] = {
+	private String reg[][] = {
 	        {"R0","0000000000000000"},{"R1","0000000000000000"},{"R2","0000000000000000"},{"R3","0000000000000000"},
 	        {"R4","0000000000000000"},{"R5","0000000000000000"},{"R6","0000000000000000"},{"R7","0000000000000000"},
 	        {"R8","0000000000000000"},{"R9","0000000000000000"},{"R10","0000000000000000"},{"R11","0000000000000000"},
@@ -15,12 +15,19 @@ public class Methods {
 	String ins[] = {"DADDIU","LD", "SD", "DADDU", "SLT", "NOP" , "BC", "BGEC", "DAUI"};
 	String inputCode;
 	
-	String[] breakCode = inputCode.split("(, )|( )|(,)"); //seperates the inputCode
     int insError = 0; //use it nalang if 1 sha then error if 0 then no
     int regError = 0; // if register error
     int thirdError = 0; // if immError/reg3Error
     
+    public Methods(String a){
+    	
+    	
+    }
     
-	
+	public void setCode(String a){
+		//only per line will be passed
+		inputCode = a;
+		String[] breakCode = inputCode.split("(, )|( )|(,)"); //seperates the inputCode
+	}
 	
 }
