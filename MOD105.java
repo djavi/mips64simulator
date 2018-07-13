@@ -146,12 +146,12 @@ public class MOD105 {
 		frmUmips.setResizable(false);
 		frmUmips.setType(Type.UTILITY);
 		frmUmips.setTitle("MIPS64 simulator v1.0");
-		frmUmips.setBounds(100, 100, 675, 570);
+		frmUmips.setBounds(100, 100, 1090, 716);
 		frmUmips.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmUmips.getContentPane().setLayout(null);
 		
 		panel = new JPanel();
-		panel.setBounds(158, 16, 350, 33);
+		panel.setBounds(15, 16, 1054, 33);
 		frmUmips.getContentPane().add(panel);
 		
 		lblNewLabel = new JLabel("\u273Fmips64 simulator v1.0\u273F");
@@ -160,7 +160,7 @@ public class MOD105 {
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Monospaced", Font.PLAIN, 16));
-		tabbedPane.setBounds(15, 57, 639, 457);
+		tabbedPane.setBounds(15, 57, 1054, 603);
 		frmUmips.getContentPane().add(tabbedPane);
 		
 		panel_1 = new JPanel();
@@ -168,18 +168,18 @@ public class MOD105 {
 		panel_1.setLayout(null);
 		
 		panel_3 = new JPanel();
-		panel_3.setBounds(0, 0, 289, 421);
+		panel_3.setBounds(0, 0, 425, 567);
 		panel_1.add(panel_3);
 		panel_3.setLayout(null);
 		
 		lblEnterCodeBelow = new JLabel("enter code below:");
 		lblEnterCodeBelow.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEnterCodeBelow.setBounds(0, 0, 289, 22);
+		lblEnterCodeBelow.setBounds(0, 0, 425, 22);
 		lblEnterCodeBelow.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		panel_3.add(lblEnterCodeBelow);
 		
 		button = new JButton("run");
-		button.setBounds(37, 388, 99, 33);
+		button.setBounds(97, 528, 99, 33);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				resetVar();
@@ -243,7 +243,7 @@ public class MOD105 {
 		});
 		
 		scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(0, 27, 289, 355);
+		scrollPane_1.setBounds(0, 27, 425, 489);
 		panel_3.add(scrollPane_1);
 		
 		textArea = new JTextArea();
@@ -261,17 +261,17 @@ public class MOD105 {
 			}
 		});
 		btnReset.setFont(new Font("Monospaced", Font.PLAIN, 18));
-		btnReset.setBounds(151, 388, 99, 33);
+		btnReset.setBounds(228, 528, 99, 33);
 		panel_3.add(btnReset);
 		
 		panel_4 = new JPanel();
-		panel_4.setBounds(290, 0, 344, 421);
+		panel_4.setBounds(425, 0, 624, 567);
 		panel_1.add(panel_4);
 		panel_4.setLayout(null);
 		
 		tabbedPane_1 = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane_1.setFont(new Font("Monospaced", Font.PLAIN, 16));
-		tabbedPane_1.setBounds(0, 0, 344, 421);
+		tabbedPane_1.setBounds(0, 0, 624, 567);
 		panel_4.add(tabbedPane_1);
 		
 		panel_6 = new JPanel();
@@ -279,7 +279,7 @@ public class MOD105 {
 		panel_6.setLayout(null);
 		
 		scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(15, 16, 309, 353);
+		scrollPane_2.setBounds(15, 16, 589, 499);
 		panel_6.add(scrollPane_2);
 		
 		textArea_1 = new JTextArea();
@@ -293,7 +293,7 @@ public class MOD105 {
 		panel_7.setLayout(null);
 		
 		scrollPane_3 = new JScrollPane();
-		scrollPane_3.setBounds(15, 16, 309, 353);
+		scrollPane_3.setBounds(15, 16, 589, 499);
 		panel_7.add(scrollPane_3);
 		
 		textArea_2 = new JTextArea();
@@ -308,7 +308,7 @@ public class MOD105 {
 		
 		tabbedPane_2 = new JTabbedPane(JTabbedPane.LEFT);
 		tabbedPane_2.setFont(new Font("Monospaced", Font.PLAIN, 16));
-		tabbedPane_2.setBounds(15, 16, 604, 389);
+		tabbedPane_2.setBounds(15, 16, 1019, 535);
 		panel_2.add(tabbedPane_2);
 		
 		panel_5 = new JPanel();
@@ -316,7 +316,7 @@ public class MOD105 {
 		panel_5.setLayout(null);
 		
 		scrollPane_4 = new JScrollPane();
-		scrollPane_4.setBounds(0, 0, 463, 384);
+		scrollPane_4.setBounds(0, 0, 878, 530);
 		panel_5.add(scrollPane_4);
 		
 		txtpndataIbytebyte = new JTextPane();
@@ -330,7 +330,7 @@ public class MOD105 {
 		panel_8.setLayout(null);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 0, 463, 384);
+		scrollPane.setBounds(0, 0, 878, 530);
 		panel_8.add(scrollPane);
 		
 		txtpnAvailableInstructions = new JTextPane();
@@ -509,9 +509,8 @@ public class MOD105 {
 	        else if (breakCode[0].equals("NOP")) { 
 	        	//NOP instruction
 	            //checks 1st parameter
-	        }
-	        else {
-	        	
+	        	if(breakCode.length == 1)
+	            	insError = 1;
 	        }
 	        
 	        
@@ -1076,6 +1075,12 @@ public class MOD105 {
             }
             
         }
+        else if(breakCode.equals("NOP"))
+        {
+            finalOp = "00000000000000000000000000000000";
+            hexOp = "00000000";
+        }
+        
         
         
         return hexOp;
