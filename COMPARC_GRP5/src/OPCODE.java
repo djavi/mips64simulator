@@ -388,5 +388,10 @@ public class OPCODE {
                 
             }
         }
+        else if(breakCode.equals("NOP"))
+        {
+            finalOp = "00000000000000000000000000000000";
+            hexOp = "00000000";
+        }
     }
 }
