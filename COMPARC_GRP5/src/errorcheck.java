@@ -174,7 +174,10 @@ public class errorcheck {
         }
         
         else { //NOP instruction
-            //checks 1st parameter
+            if(breakCode.length > 1)
+            {
+                insError = 1;
+            }
         }
         
         System.out.println(insError);
