@@ -97,6 +97,9 @@ public class MOD105 {
 	public static int branchError = 0; // if register error
 	public static int thirdError = 0; // if immError/reg3Error
 	
+	public static boolean negBranch = false;
+	public static int negBranchCtr = 0;
+	public static boolean posBranch = true; //Initialized to true. Initial assumption is positive branch (opcode)
 	
 	//Opcode Variables
 	String opcodeBin;
@@ -205,6 +208,8 @@ public class MOD105 {
 						cnt++;
 				}
 				
+				int branch_ctr = 0;
+				int neg_ctr = 0;
 				//if no error continue to opcode, if error, alert "ERROR!"
 				switch(error){
 					case 0: 
@@ -214,6 +219,7 @@ public class MOD105 {
 							resetVar();
 							henlo = wopCode(temp[q], q, temp);
 							textArea_2.setText(textArea_2.getText() + "line # " + q + " - " + temp[q] + ": " + henlo + "\n\n");
+							
 						}
 						textArea_1.setText("Congrats! No errors. Check generated opcode.");
 						break;
@@ -871,13 +877,33 @@ public class MOD105 {
             int countz = -1; //ito ung layo ng label from branch
             //found label breakCode[1]
             String temp = breakCode[1] + ":";
+			int aaa = yeet.length();
+			int count_2 = offset;
+			boolean flag = false;
+			boolen negative_flag = true;
             while(found == 0){
-            	if(yeet[offset].equals(temp)){
-            		found = 1;
-            	}
-            	else
-            		countz++;
-            	offset++;	
+            	if((offset != aaa)&&(!flag)){
+					if(yeet[offset].equals(temp)){
+						found = 1;
+					}
+					else
+						countz++;
+					offset++;	
+				}
+				else{
+					flag = true;
+					countz = -1;
+					while(negative_flag){
+						if(yeet[count_2].equals(temp)){
+							negative_flag = false;
+							found = 1;
+						}
+						else
+							countz++;
+						count_2--;
+					}
+				}
+				
             }
             
             System.out.println(countz);
@@ -946,13 +972,33 @@ public class MOD105 {
             String tempA = breakCode[1].substring(1);
             String tempB = breakCode[2].substring(1);
             String temp = breakCode[3] + ":";
+            int aaa = yeet.length();
+			int count_2 = offset;
+			boolean flag = false;
+			boolen negative_flag = true;
             while(found == 0){
-            	if(yeet[offset].equals(temp)){
-            		found = 1;
-            	}
-            	else
-            		countz++;
-            	offset++;	
+            	if((offset != aaa)&&(!flag)){
+					if(yeet[offset].equals(temp)){
+						found = 1;
+					}
+					else
+						countz++;
+					offset++;	
+				}
+				else{
+					flag = true;
+					countz = -1;
+					while(negative_flag){
+						if(yeet[count_2].equals(temp)){
+							negative_flag = false;
+							found = 1;
+						}
+						else
+							countz++;
+						count_2--;
+					}
+				}
+				
             }
             
             System.out.println(countz);
