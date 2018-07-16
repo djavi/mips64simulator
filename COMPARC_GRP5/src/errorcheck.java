@@ -25,7 +25,7 @@ public class errorcheck {
         
         String ins[] = {"DADDIU","LD", "SD", "DADDU", "SLT", "NOP" , "BC", "BGEC", "DAUI"};
         
-        String inputCode = "DADDIU R1, R0, #0002";
+        String inputCode = "DAUI R1, R2, R1";
         
         String[] breakCode = inputCode.split("(, )|( )|(,)"); //seperates the inputCode
         int branchError = 0;
@@ -173,7 +173,7 @@ public class errorcheck {
  
         }
         
-        else { //NOP instruction
+        else if(breakCode[0].equals("NOP")) { //NOP instruction
             if(breakCode.length > 1)
             {
                 insError = 1;

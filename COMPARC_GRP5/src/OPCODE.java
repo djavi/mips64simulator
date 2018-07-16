@@ -25,7 +25,7 @@ public class OPCODE {
         };
         
         String ins[] = {"DADDIU","LD", "SD", "DADDU", "SLT", "NOP" , "BC", "BGEC", "DAUI"};
-        String inputCode = "DADDIU R1, R2, #0002";
+        String inputCode = "DAUI R1, R2, #0002";
         
         String breakCode[] = inputCode.split("(, )|( )|(,)");
         
